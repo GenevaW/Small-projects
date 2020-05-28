@@ -1,0 +1,1157 @@
+#enter = checks user entered one of the keywords
+
+
+
+
+
+#------------------ PRESS RUN AND PLAY -----------------------------
+
+
+
+
+def enter():        
+  check = False
+  while check == False:
+    word = input("Enter action... ").lower() #so doesnt matter if CAPS are used
+    if word == "grab" or word == "use" or word == "north" or word == "east" or word == "south" or word == "west" or word == "up" or word == "down":
+      check = True
+    elif word == "help":
+      print("Command words are:\ngrab, use, north, east, south, west, up, down\n")
+    elif word == "quest":
+      print("Mr B-Quad\nMs M-Languages\nMr B-Chemistry\nMs C-Library\nMs L-Biology\nMs P-Art\n")
+    else:
+      check = False
+      print("That is not a valid input, please enter again\n")
+  return word
+  #makes user enter input and if its one of the keywords returns true else makes user enter agian until they get a keyword
+
+#inputability = checks if u can do input at current loc
+def inputability (area):      
+  able = False
+  location = area #stores the locations 'place' array in this subroutine, getting rid of the problem of global variables
+  while able == False:
+    enters = enter() #loops user entering until they get keyword and possible to do that keyword at location
+    if enters == "grab" and location["grab"] == True:
+      able = True
+    elif enters == "use" and location["use"] == True:
+      able = True
+    elif enters == "north" and location["north"] == True:
+      able = True
+    elif enters == "east" and location["east"] == True:
+      able = True
+    elif enters == "south" and location["south"] == True:
+      able = True
+    elif enters == "west" and location["west"] == True:
+      able = True
+    elif enters == "up" and location["up"] == True:
+      able = True
+    elif enters == "down" and (location["down"]) == True:
+      able = True
+    else:
+      able = False
+      print("You are unable to do this action in this location\n")
+  return enters
+
+#inventoryadd = adds item to inventory array
+def inventoryadd (inventory, grabbed): 
+  inventory.append(grabbed) #adds the item to end of inventory list
+  return inventory
+
+#inventoryremove = finds item and removes it from array
+def inventoryremove (inventory,used): 
+  for i in inventory: #repeats for every item in inventory
+    if i == used:
+      r = i #stores place of wanted item
+      inventory.remove(r) #removes said item
+      break  
+   #if value not in array is requested to be removed it just returns origional array
+
+#inventorycheck = checks if specified item is in array
+def inventorycheck (inventory,thing): 
+  there = False
+  for i in inventory: #repeats for every item in inventory
+    if i == thing:
+      there = True
+      break #if theyre the same break out of loop
+    else:
+      there = False
+  return there
+
+#inventory print = prints inventory but prettily
+def inventoryprint (inventory): 
+  print("INVENTORY: ", *inventory, sep = ", ")
+    
+#start = print intro to game 
+def start():    
+  print("Hello and welcome to _**INSERT EPIC TITLE**__ \n \n")
+  print("You must travel around the school find and release the teachers by either freeing them or completing a quest. Beware there are some strange crteatures around the school which you should look out for, especially the massive spiders den next to the common room.\n")
+  print("You can enter only the words: \n\n grab, use, north, east, south, west, up, and down.\n")
+  print("These commands will move you around the map as well as picking up things and using them in quests.'grab' picks up items in your current area and 'use' will use them. You will not be prompted when you are able to do this.\n")
+  print("If you need reminding of this enter 'help'\nIf you need help finding the teachers enter 'quest'\n\n")
+  print("Good luck may **EPIC TITLE** begin...")
+  go = input("Press enter to start... ")
+  print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
+
+#questdone = changes 'quest' definition to False
+def questdone(area): 
+  location = area 
+  location["quest"] = False  
+
+#questcheck = checks if 'quest' is T or F at current loc
+def questcheck(area):   
+  location = area
+  if location["quest"] == True:
+    return True
+  else:
+    return False
+
+#textprint = prints the text for loc depending on quest
+def textprint (loc):      
+  quest = questcheck(loc)
+  if quest == True:
+    text = loc["tquest"]
+  else:
+    text = loc["fquest"]
+  print (text)
+
+#printchoices = prints directions user is able to go to from loc
+def printchoices(loc):      #MOSTLY WORKS, MOSTLY...
+  try:
+    if loc["north"] == True:
+      lic = loc["n"]
+      nplace = "north to %s" % (lic["name"])
+      print(nplace)
+  except :
+      pass
+  try:
+    if loc["east"] == True:
+      lic = loc["e"]
+      eplace = "east to %s" % (lic["name"])
+      print(eplace)
+  except:
+    pass
+  try:
+    if loc["south"] == True:
+      lic = loc["s"]
+      splace = "south to %s"  % (lic["name"])
+      print(splace)
+  except:
+    pass
+  try:
+    if loc["west"] == True:
+     lic = loc["w"]
+     wplace = "west to %s" % (lic["name"])
+     print(wplace)
+  except:
+    pass
+  try:
+   if loc["up"] == True:
+      lic = loc["u"]
+      uplace = "up to %s" % (lic["name"])
+      print(uplace)
+  except:
+    pass
+  try:
+   if loc["down"] == True:
+      lic = loc["d"]
+      dplace = "down to %s"  % (lic["name"])
+      print(dplace)
+  except:
+    pass
+
+#newlocarray = preturns what is specified direction of loc
+def newlocarray (area, direction) : 
+  if direction == "north":
+    return area["n"]
+  elif direction == "east":
+    return area["e"]
+  elif direction == "south":
+    return area["s"]
+  elif direction == "west":
+    return area["w"]
+  elif direction == "up":
+    return area["u"]
+  elif direction == "down":
+    return area["d"]    
+
+#newlocation = replaces loc array with the new location
+def newlocation (current, direction):
+  new = newlocarray(current, direction)
+  return new
+
+#returns if the input is motion or items
+def motioninput(user):
+  if user == "north" or user == "east" or user == "south" or user == "west" or user == "up" or user == "down":
+    return True
+  else:
+    return False
+
+#dealitem = if grab=grabs, use=uses,  ... DEALS
+def dealitem(loc,inventory,user,count):  #MAY WORK???
+  if user == "grab" : 
+    grab(inventory, loc)
+  elif user == "use" : 
+    use(inventory, loc)
+    if loc["teacher"] == True:
+      teachercounter(count)
+      loc["teacher"] = False
+  
+
+#use = check if user has needed item and remove it if they do. also if 'item' is present in array it adds it to inventory
+def use (inventory, loc):
+  need = loc["need"]
+  have = inventorycheck(inventory, need)
+  if have == True:
+    inventoryremove(inventory, need)
+    loc["use"] = False
+    questdone(loc)
+    try:
+      item = loc["item"]
+      inventoryadd (inventory, item)
+    except:
+      pass
+    text = loc["cquest"]
+    print(text)
+  else:
+    print("You do not have the item needed in your inventory.")
+  
+
+#grab = places item in inventory and sets 'grab' False
+def grab (inventory, loc):
+  item = loc["item"]
+  inventoryadd (inventory, item)
+  loc["grab"] = False
+  questdone(loc)
+  text = loc["cquest"]
+  print (text)
+
+#teachercount = tracks how many teachers are freed out of total num
+def teachercounter(teachercount):
+  teachercount = teachercount + 1
+
+#game = hopefully compiling entire game together
+def game():
+  start()
+  loc = office
+  while teachercount < 7 :
+   print("\nYou are now in ", loc["name"])
+   textprint(loc)
+   inventoryprint(inventory)
+   printchoices(loc)
+   user = inputability(loc)
+   while motioninput(user) != True:
+     dealitem(loc, inventory, user,teachercount)
+     user = inputability(loc)
+   loc = newlocation(loc,user)
+  print("congrats go to the MAAAAAAD party and it is indeed mad.")
+     
+
+
+   
+
+
+
+
+
+
+
+
+
+
+
+teachercount = 0
+inventory = []
+#--------------------------places-------------------------
+# location_name = {
+  #"name" : "location name"
+  #"quest" : is there something to do here
+  #"teacher" : wheather teacher is there to be saved hwen item used
+  #"grab" : can u grab something here
+  #"item" : the item u can grab
+  #use" : can u use something here
+  #"need" : the item i can use here
+  #"north" : can u go north
+  #"east" : can u go east
+  #"south" : can u go south
+  #"west" : can u go west
+  #"up" : can u go up
+  #"down" : can u go down
+  #"tquest" : what it says when u aint done the quest here
+  #"cquest" : what it says when u completed quest here
+  #"fquest" : what it says when u ahve done the quest here
+#}
+chemistry = {   
+  "name" : "Chemistry",    
+  "quest" : True , #half human half chicken
+  "teacher" : True, 
+  "grab" : False , 
+  "use" : True , #potion
+  "need" : "Herbal Potion",
+  "north" : True , #biology2
+  "east" : True , #maths1
+  "south" : True , #quad
+  "west" : True , #biology1
+  "up" : True , #languages
+  "down" : False ,
+  "tquest" : "half human half chicken, he need potion oit of herbs\n" , 
+  "cquest" : "mr B becoming human again. Congratulations he is now free!",
+  "fquest" : "desks\n" ,
+}
+quad = { 
+  "name" : "the Quad",
+  "quest" : True , #chicken
+  "teacher" : True,
+  "grab" : False ,
+  "use" : True , #to banish chicken
+  "need" : "Bread Crumbs",
+  "north" : True , #to chem
+  "east" : False ,
+  "south" : True , #to hall
+  "west" : False,
+  "up" : False ,
+  "down" : False ,
+  "tquest" : "wow big chicken holding mr blount hostage\n" , 
+  "cquest" : "chicken lunges at breadcrumb and mr B ran free. Congratulations he is now free!",
+  "fquest" :"congrats big chicken dead, mr B freeee\n" ,
+}
+canteen = {
+  "name" : "the Canteen",
+  "quest" : True , #beadcrums
+  "teacher" : False,
+  "grab" : True , #breadcrumbs
+  "item" : "Bread Crumbs",
+  "use" : False, 
+  "north" : True , #office
+  "east" : False , 
+  "south" : False , 
+  "west" : False , 
+  "up" : False , 
+  "down" : False ,
+  "tquest" : "breadcrumbs on the floor, take them to free blount from the massive chicken\n", 
+  "cquest" : "you've picked up some breadcrumbs",
+  "fquest" : "no free food today :(\n" ,
+}
+art = {
+  "name" : "Art",
+  "quest" : True , #pateman
+  "teacher" : True,
+  "grab" : False , 
+  "use" : True ,  #skully
+  "need" : "Skully",
+  "north" : False , 
+  "east" : True , #art area
+  "south" : False , 
+  "west" : False , 
+  "up" : False ,
+  "down" : False ,
+  "tquest" : "ooh no P has no skully, plz find. Looks as if someone from the english department has stolen him!\n" , 
+  "cquest" : "mr P finally reunited, all happy.Congratulations he is now free!",
+  "fquest" : "just paint nothing interesting\n" ,
+}
+corridor = {        #refine story
+  "name" : "the corridor",
+  "quest" : True , #yr 7s
+  "teacher" : False,
+  "grab" : True , 
+  "item" : "Singing Yr 7's",
+  "use" : False , #
+  "north" : True , #artarea
+  "east" : True , #wellbeing
+  "south" : True , #biology1
+  "west" : True , #6block1
+  "up" : False ,
+  "down" : False,
+  "tquest" : "AHH a herd of year 7's all singing and dancing, they really need to find a play to be part of.\n" , 
+  "cquest" : "You call them over and they start folowing you.",
+  "fquest" : "empty\n" ,
+}
+office = {
+  "name" : "the Office",
+  "quest" : True , #register peeeps
+  "teacher" : False,
+  "grab" : True ,  #regester people
+  "item" : "Register Moniters",
+  "use" : False , 
+  "north" : True , #biology1
+  "east" : True , #hall
+  "south" : True , #canteen
+  "west" : False , 
+  "up" : True ,   #confusioncorridor
+  "down" : False ,
+  "tquest" : "Oh, it's those year 8 register monitors, quick lets feed them to the spiders\n" , 
+  "cquest" : "You've collected the register moniters, wonder where you'll take them? ps. try next to common room",
+  "fquest" : "beep beep\n" ,
+}
+biology1 = {
+  "name" : "Biology",
+  "quest" : True , #big plant
+  "teacher" : True,
+  "grab" : False , 
+  "use" : True , #trumpet
+  "need" : "Trumpet",
+  "north" :True , 
+  "east" : True , 
+  "south" : True , #chemistry
+  "west" : False , 
+  "up" : True ,  #languages
+  "down" : False ,
+  "tquest" : "Ms L is being held captive by a big plant. Don't plants hate loud noises?\n" , 
+  "cquest" : "Terrified of the loud noise, the plant dies and Ms L is free. Congratulations!",
+  "fquest" : "Nothing but sheepish lab assistants\n" ,
+}
+hall = {          #UNDECIDED STORY
+  "name" : "the Hall",
+  "quest" : True , 
+  "teacher" : False,
+  "grab" : False , 
+  "use" : False , 
+  "north" : True , #quad
+  "east" : True , #drama
+  "south" : True , #changingroom/stage
+  "west" : True , #office
+  "up" : False , 
+  "down" : False ,
+  "tquest" : "\n" , 
+  "cquest" : "",
+  "fquest" : "\n" ,
+}
+changingroom = {      #UNDECIDED STORY
+  "name" : "the changing-room",
+  "quest" : True , 
+  "teacher" : False,
+  "grab" : False , 
+  "use" : False , 
+  "north" : True , #hall
+  "east" : True , #gym
+  "south" : False , 
+  "west" : False , 
+  "up" : False , 
+  "down" : False ,
+  "tquest" : "\n" , 
+  "cquest" : "",
+  "fquest" : "\n" ,
+}
+gym = {   
+  "name" : "the Gym",       
+  "quest" : True , 
+  "teacher" : False,
+  "grab" : True ,   #net
+  "item" : "Net",
+  "use" : False , 
+  "north" : False , 
+  "east" : True , #outside
+  "south" : False , 
+  "west" : True , #changingroom
+  "up" : False , 
+  "down" : False ,
+  "tquest" : "A dusty old net, perfect for catching bees\n" , 
+  "cquest" : "You've grabbed an old net",
+  "fquest" : "echoey old hall\n" ,
+}
+drama1 = {      #UNDECIDED STORY
+  "name" : "Drama",
+  "quest" : True , 
+  "teacher" :True,
+  "grab" : False , 
+  "use" :True , 
+  "need" : "Singing Yr 7's",
+  "north" : True , #maths1
+  "east" : True , #classics
+  "south" : False ,
+  "west" : True , #hall
+  "up" : False , 
+  "down" : False ,
+  "tquest" : "Mr S is feeling sad. He needs a good play to cheer him up. You should find him some willing, singing volunteers.\n" , 
+  "cquest" : "He can't wait to start directing. Congratulations, he is now free!",
+  "fquest" : "You see how the play is coming along. Judging by all the after school rehersals, not well...\n" ,
+}
+classics = {        #UNDECIDED STORY
+  "name" : "Classics",
+  "quest" : True , 
+  "teacher" : False,
+  "grab" : False , 
+  "use" : False , 
+  "north" : False , 
+  "east" : True , #outside
+  "south" : False , 
+  "west" : True , #drama
+  "up" : True ,   #english
+  "down" : False ,
+  "tquest" : "\n" , 
+  "cquest" : "",
+  "fquest" : "\n" ,
+}
+maths1 = {      #UNDECIDED STORY
+  "name" : "Maths",
+  "quest" : True , 
+  "teacher" : False,
+  "grab" : False , 
+  "use" : False , 
+  "north" : True , #engineering
+  "east" : False , 
+  "south" : True , #drama1
+  "west" : True , #chemistry
+  "up" : True , #maths2
+  "down" : False ,
+  "tquest" : "\n" , 
+  "cquest" : "",
+  "fquest" : "\n" ,
+}
+outside = {              #UNDECIDED STORY
+  "name" : "outside",
+  "quest" : True , 
+  "teacher" : False,
+  "grab" : False , 
+  "use" : False , 
+  "north" : True , #netball
+  "east" : True , #dt
+  "south" : True , #gym
+  "west" : True , #classics
+  "up" : False , 
+  "down" : False ,
+  "tquest" : "\n" ,
+  "cquest" : "", 
+  "fquest" : "\n" ,
+}
+dt = {              #UNDECIDED STORY
+  "name" : "DT",
+  "quest" : True , 
+  "teacher" : False,
+  "grab" : False , 
+  "use" : False , 
+  "north" : False ,
+  "east" : False , 
+  "south" : False , 
+  "west" : True , #outside
+  "up" : False , 
+  "down" : False ,
+  "tquest" : "\n" , 
+  "cquest" : "",
+  "fquest" : "\n" ,
+}
+engineering = {          #UNDECIDED STORY
+  "name" : "Engineering",
+  "quest" : True , 
+  "teacher" : False,
+  "grab" : False , 
+  "use" : False , 
+  "north" : False ,
+  "east" : False, 
+  "south" : True , #maths1
+  "west" : False , 
+  "up" : False , 
+  "down" : False ,
+  "tquest" : "\n" , 
+  "cquest" : "",
+  "fquest" : "\n" ,
+}
+biology2 = {        #UNDECIDED STORY
+  "name" : "Biology",
+  "quest" : True , 
+  "teacher" : False,
+  "grab" : False , 
+  "use" : False , 
+  "north" : False ,
+  "east" : False ,
+  "south" : True , #chemistry
+  "west" : False ,
+  "up" : False , 
+  "down" : False ,
+  "tquest" : "\n" , 
+  "cquest" : "",
+  "fquest" : "\n" ,
+}
+sixblock1 = {         #UNDECIDED STORY
+  "name" : "the 6th Form Block",
+  "quest" : True ,
+  "teacher" : False,
+  "grab" : False , 
+  "use" : False , 
+  "north" : False ,
+  "east" : True , #corridor
+  "south" : False ,
+  "west" : False ,
+  "up" : True , #sixblock2
+  "down" : False ,
+  "tquest" : "\n" , 
+  "cquest" : "",
+  "fquest" : "\n" ,
+}
+artarea = {                 #partial story
+  "name" : "the area outside Art",
+  "quest" : True , #yr 11s
+  "teacher" : False,
+  "grab" : False , 
+  "use" : True , #
+  "north" : True , #history
+  "east" : True , #physics
+  "south" : True , #corridor
+  "west" : True , #art
+  "up" : True , #commonroom
+  "down" : False ,
+  "tquest" : "AHHHHH yr 11s want ... something...\n" , 
+  "cquest" : "",
+  "fquest" : "\n" ,
+}
+history = {          #UNDECIDED STORY
+  "name" : "History",
+  "quest" : True , 
+  "teacher" : False,
+  "grab" : False , 
+  "use" : False , 
+  "north" : False ,
+  "east" : False ,
+  "south" : True , #artarea
+  "west" : False ,
+  "up" : False , 
+  "down" : False ,
+  "tquest" : "\n" , 
+  "cquest" : "",
+  "fquest" : "\n" ,
+}
+physics = {     #UNDECIDED STORY
+  "name" : "Physics",
+  "quest" : True , 
+  "teacher" : False,
+  "grab" : False , 
+  "use" : False , 
+  "north" : False ,
+  "east" : False ,
+  "south" : False ,
+  "west" : True , #artarea
+  "up" : True , #rs
+  "down" : False ,
+  "tquest" : "\n" , 
+  "cquest" : "",
+  "fquest" : "\n" ,
+}
+wellbeing = {    
+  "name" : "the well-being garden",   
+  "quest" : True , 
+  "teacher" : False,
+  "grab" : True ,  #potion from chem man
+  "item" : "Herbal Potion",
+  "use" : False , 
+  "north" : False ,
+  "east" : True , #netball
+  "south" : False ,
+  "west" : True , #corridor
+  "up" : False , 
+  "down" : False ,
+  "tquest" : "Take this potion and save Mr B in chemistry!\n" , 
+  "cquest" : "You grab the potion and rush off",
+  "fquest" : "Peaceful herbs\n" ,
+}
+netball = {
+  "name" : "the Netball courts",
+  "quest" : True , #frau thomas on motorcyle
+  "teacher" : True,
+  "grab" : False ,
+  "use" : True , #montero
+  "need" : "Ms Montero",
+  "north" : True , #sportshall
+  "east" : True , #hives
+  "south" : True , #outside
+  "west" : True , #wellbeing
+  "up" : False , 
+  "down" : False ,
+  "tquest" : "Frau T is crazily riding Mrs M's motorbike, doing doughnuts and wow\n" , 
+  "cquest" : "Ms M flips elegantly onto the motorcycle and does rings around the courts. Congratulations she is now free!",
+  "fquest" : "Misty freezing cold courts with some epic motorcycle tricks!!!!!!\n" ,
+}
+hives = {
+  "name" : "the Bee Hives",
+  "quest" : True , 
+  "teacher" : False,
+  "grab" : False , 
+  "item" : "Swarm of Bees",
+  "use" : True , #net
+  "need" : "Net",
+  "north" : True , #music1
+  "east" : False ,
+  "south" : False ,
+  "west" : True , #netball
+  "up" : False , 
+  "down" : False ,
+  "tquest" : "Use the net to capture bees\n" , 
+  "cquest" : "You swipe the bees into the net and put them in your bag for later",
+  "fquest" : "Empty hives, too much honey...\n" ,
+}
+music1 = {     #UNDECIDED STORY
+  "name" : "Music",
+  "quest" : True , 
+  "teacher" : False,
+  "grab" : False , 
+  "use" : False , 
+  "north" : False ,
+  "east" : False ,
+  "south" : True , #hives
+  "west" : True , #sportshall
+  "up" : True ,  #music2
+  "down" : False ,
+  "tquest" : "The instruments aren't down here, perhaps they are upstairs?\n" , 
+  "cquest" : "",
+  "fquest" : "\n" ,
+}
+sportshall = {             #UNDECIDED STORY
+  "name" : "the Sports Hall",
+  "quest" : True , 
+  "teacher" : False,
+  "grab" : False , 
+  "use" : False , 
+  "north" : False ,
+  "east" : True , #music
+  "south" : True , #netball
+  "west" : False ,
+  "up" : False , 
+  "down" : False ,
+  "tquest" : "\n" , 
+  "cquest" : "",
+  "fquest" : "\n" ,
+}
+english = {     
+  "name" : "English",
+  "quest" : True , 
+  "teacher" : False,
+  "grab" : False ,
+  "item" : "Skully",
+  "use" : True ,  # skulls
+  "need" : "Skull",
+  "north" : False ,
+  "east" : False ,
+  "south" : False ,
+  "west" : True , #drama2
+  "up" : False , 
+  "down" : True ,  #classics
+  "tquest" : "Oh look its Skully, Mr L must have stolen it to use as a prop in his one-man production of Hamlet. You need to find something to swap it with; only the real thing could fool him.\n" , 
+  "cquest" : "You run over and swap the skulls. Mr L will never notice the differene. You pocket the real Skully and sneak away",
+  "fquest" : "It's English, what's there to say\n" ,
+}
+drama2 = {          #UNDECIDED STORY
+  "name" : "Drama",
+  "quest" : True , 
+  "teacher" : False,
+  "grab" : False , 
+  "use" : False , 
+  "north" : True , #computing
+  "east" : True , #english
+  "south" : False ,
+  "west" : False ,
+  "up" : False , 
+  "down" : False ,
+  "tquest" : "\n" , 
+  "cquest" : "",
+  "fquest" : "\n" ,
+}
+computing = {
+  "name" : "Computing",             
+  "quest" : True , 
+  "teacher" : False,
+  "grab" : False , 
+  "use" : False ,
+  "north" : True , #languages
+  "east" : False ,
+  "south" : True , #drama
+  "west" : True , #confusioncorridor
+  "up" : False , 
+  "down" : False ,
+  "tquest" : "absolute maaaad party, but u cant join unles u free all teachers\n" , 
+  "cquest" :"",
+  "fquest" : "u get donut congrats\n" ,
+}
+maths2 = {           #UNDECIDED STORY
+  "name" : "Maths",
+  "quest" : True , 
+  "teacher" : False,
+  "grab" : False , 
+  "use" : False ,
+  "north" : False ,
+  "east" : True , #languages
+  "south" : False ,
+  "west" : False ,
+  "up" : False , 
+  "down" : True ,  #maths1 
+  "tquest" : "\n" , 
+  "cquest" : "",
+  "fquest" : "\n" ,
+}
+cloakroom = {        #UNDECIDED STORY
+  "name" : "the Cloak-room",
+  "quest" : True , 
+  "teacher" : False,
+  "grab" : True , 
+  "item" : "Coat",
+  "use" : False ,
+  "north" : False ,
+  "east" : False ,
+  "south" : False ,
+  "west" : True , #confusioncorridor
+  "up" : False , 
+  "down" : False ,
+  "tquest" : "you see a strange yr 7 hiding in the coats, smiling creepily:)\n" , 
+  "cquest" : "",
+  "fquest" : "\n" ,
+}
+confusioncorridor = {    #UNDICED STORY
+  "name" : "the Staff Room Corridor",
+  "quest" : True , 
+  "teacher" : False,
+  "grab" : False , 
+  "use" : False ,
+  "north" : True , #geography
+  "east" : True , #cloakroom
+  "south" : True , #computin
+  "west" : True ,
+  "up" : True ,  #library
+  "down" : True , #office
+  "tquest" : "\n" , 
+  "cquest" : "",
+  "fquest" : "\n" ,
+}
+languages = {  
+  "name" : "Languages",    
+  "quest" : True , 
+  "teacher" : False,#teacher here but taked and freed elsewhere
+  "grab" : True , #montero
+  "item" : "Ms M",
+  "use" : False , 
+  "north" : False ,
+  "east" : True , #maths
+  "south" : True , #computing
+  "west" : True , #confusioncorridor
+  "up" : False , 
+  "down" : True , #chemistry
+  "tquest" : "M's lost her bycycle, take her to it\n" ,
+  "cquest" : "You pick up M and continue on you way", 
+  "fquest" : "**ostwind playing in background**\n" ,
+}
+geography = {         #UNDECIDED STORY
+  "name" : "Geography",
+  "quest" : True , 
+  "teacher" : False,
+  "grab" : "Spinning Globe",
+  "use" : False ,
+  "north" : True , #commonroom
+  "east" : False ,
+  "south" : True , #confisioncorridor
+  "west" : False ,
+  "up" : False , 
+  "down" : False ,
+  "tquest" : "just a lonely spinning globe\n" ,
+  "cquest" : "", 
+  "fquest" : "\n" ,
+}
+commonroom = {         #partialISH story
+  "name" : "the Common Room",
+  "quest" : True , 
+  "teacher" : False,
+  "grab" : False , 
+  "use" : False , 
+  "north" : False ,
+  "east" : True , #rs
+  "south" : True , #geography
+  "west" : True , #emptyblock
+  "up" : False , 
+  "down" : True ,  #artarea
+  "tquest" : "yr 12s playing viscious irish snap and poker\n" , 
+  "cquest" : "",
+  "fquest" : "empty\n" ,
+}
+rs = {                        #UNDECIDED STORY
+  "name" : "RS",
+  "quest" : True , 
+  "teacher" : False,
+  "grab" : False , 
+  "use" : False ,
+  "north" : False ,
+  "east" : False ,
+  "south" : False ,
+  "west" : True , #6commonroom
+  "up" : False , 
+  "down" : True ,  #physics
+  "tquest" : "\n" , 
+  "cquest" : "",
+  "fquest" : "\n" ,
+}
+emptyblock = {    
+  "name" : "the Spiders Den",   
+  "quest" : True , #mr F tied up by massive spider
+  "teacher" : True,
+  "grab" : False ,
+  "item" : "Skull", 
+  "use" : True , #feed register moniters to massive spider
+  "need" : "Register Moniters",
+  "north" : False ,
+  "east" : True , #commonroom
+  "south" : False ,
+  "west" : False ,
+  "up" : False , 
+  "down" : False ,
+  "tquest" : "oooh all empty and mysterious, or is it mrF needs to be saved, find another suitable meal...\n" ,
+  "cquest" : "u show the register moniters into the den and run while the spider is distraced. you grab a skull from the den entrance, might be useful. Congratulations he is now free!",
+  "fquest" : "baby spiders are hatching...dun...dun...duuuunn\n" ,
+}
+sixblock2 = {            #UNDECIDED STORY
+  "name" : "the 6th Form Block",
+  "quest" : True , 
+  "teacher" : False,
+  "grab" : True , 
+  "item" : "Spare Blazers",
+  "use" : False ,
+  "north" : False ,
+  "east" : False ,
+  "south" : False ,
+  "west" : False ,
+  "up" : False , 
+  "down" : True ,  #sixblock1
+  "tquest" : "piles of spare ties and blazes in piles\n" , 
+  "cquest" : "",
+  "fquest" : "\n" ,
+}
+music2 = {
+  "name" : "Music",
+  "quest" : True , 
+  "teacher" : False,
+  "grab" : True ,  #trumpet
+  "item" : "Trumpet",
+  "use" : False ,
+  "north" : False ,
+  "east" : False ,
+  "south" : False ,
+  "west" : False ,
+  "up" : False , 
+  "down" : True ,
+  "tquest" : "ooh loose trumpet\n" , 
+  "cquest" : "Grab the trumpte",
+  "fquest" : "plink of empty pianos\n" ,
+}
+library = {
+  "name" : "the Library",
+  "quest" : True , #ms C hkidnapped by new librarians
+  "teacher" : True,
+  "grab" : False , 
+  "use" : True , #swarm of bees
+  "need" : "Swarm of Bees",
+  "north" : False ,
+  "east" : False ,
+  "south" : False ,
+  "west" : False ,
+  "up" : False , 
+  "down" : True ,  #confusioncorridor
+  "tquest" : "muffled noise of Ms C coming from pags of books. heard bees are very good book worms\n" , 
+  "cquest" : "The swarm of bees are released and cause havoc, amid the comfusion ms C sneaks away",
+  "fquest" : "shredded paper all around, but somehow still endless books\n" ,
+}
+supportroom = {
+  "name" : "the Student Support Room",
+  "quest" : True , #ms C hkidnapped by new librarians
+  "teacher" : True,
+  "grab" : False , 
+  "use" : True , #swarm of bees
+  "need" : "Swarm of Bees",
+  "north" : False ,
+  "east" : False ,
+  "south" : False ,
+  "west" : False ,
+  "up" : False , 
+  "down" : True ,  #confusioncorridor
+  "tquest" : "muffled noise of Ms C coming from pags of books. heard bees are very good book worms\n" , 
+  "cquest" : "The swarm of bees are released and cause havoc, amid the comfusion ms c sneaks away",
+  "fquest" : "shredded paper all around, but somehow still endless books\n" ,
+}
+#----------------------location----------------------#
+#these are what each location connects to on its north east south and west. the lines separating each of these dicts basically merge it with the origional so it can be called in the same branch and basically its much easier this way. i say easier as we legit have another 150 lines of code!
+locchemistry = {
+  "n" : biology2 ,
+  "e" : maths1 ,
+  "s" : quad ,
+  "w" : biology1 ,
+  "u" : languages ,}
+chemistry.update(locchemistry) #
+locquad = {
+  "n" : chemistry ,
+  "s" : hall,}
+quad.update(locquad)
+loccanteen = {
+  "n" : office ,}
+canteen.update(loccanteen)
+locart = {
+  "e" : artarea ,}
+art.update(locart)
+loccorridor = {
+  "n" : artarea ,
+  "e" : wellbeing ,
+  "s" : biology1 ,
+  "w" : sixblock1 ,}
+corridor.update(loccorridor)
+locoffice = {
+  "n" : biology1 ,
+  "e" : hall ,
+  "s" : canteen ,
+  "u" : confusioncorridor ,}
+office.update(locoffice)
+locbiology1 = {
+  "s" : office ,
+  "u" : confusioncorridor ,
+  "e" : chemistry,
+  "n" : corridor, }
+biology1.update(locbiology1)
+lochall = {
+  "n" : quad ,  
+  "e" : drama1 ,
+  "s" : changingroom ,
+  "w" : office ,}
+hall.update(lochall)
+locchangingroom = {
+  "n" : hall ,
+  "e" : gym ,}
+changingroom.update(locchangingroom)
+locgym = {
+  "e" : outside ,
+  "w" : changingroom ,}
+gym.update(locgym)
+locdrama1 = {
+  "n" : maths1 ,
+  "e" : classics ,
+  "w" : hall ,}
+drama1.update(locdrama1)
+locclassics = {
+  "e" : outside ,
+  "w" : drama1 ,
+  "u" : english ,}
+classics.update(locclassics)
+locmaths1 = {
+  "n" : engineering ,
+  "s" : drama1 ,
+  "w" : chemistry ,
+  "u" : maths2 ,}
+maths1.update(locmaths1)
+locoutside = {
+  "n" : netball ,
+  "e" : dt ,
+  "s" : gym ,
+  "w" : classics ,}
+outside.update(locoutside)
+locdt = {
+  "w" : outside ,}
+dt.update(locdt)
+locengineering = {
+  "s" : maths1 ,}
+engineering.update(locengineering)
+locbiology2 = {
+  "s" : chemistry ,}
+biology2.update(locbiology2)
+locsixblock1 = {
+  "e" : corridor ,
+  "u" : sixblock2 ,}
+sixblock1.update(locsixblock1)
+locartarea = {
+  "n" : history ,
+  "e" : physics ,
+  "s" : corridor ,
+  "w" : art ,  
+  "u" : commonroom ,}
+artarea.update(locartarea)
+lochistory = {
+  "s" : artarea ,}
+history.update(lochistory)
+locphysics = {
+  "w" : artarea ,
+  "u" : rs ,
+  "s" : wellbeing, }
+physics.update(locphysics)
+locwellbeing = {
+  "n" : physics,
+  "e" : netball ,
+  "w" : corridor ,}
+wellbeing.update(locwellbeing)
+locnetball = {
+  "n" : sportshall ,
+  "e" : hives ,
+  "s" : outside ,
+  "w" :wellbeing ,}
+netball.update(locnetball)
+lochives = {
+  "n" : music1 ,
+  "w" : netball ,}
+hives.update(lochives)
+locmusic1 = {
+  "s" : hives ,
+  "w" : sportshall ,
+  "u" : music2 ,}
+music1.update(locmusic1)
+locsportshall = {
+  "e" : music1 ,
+  "s" : netball ,}
+sportshall.update(locsportshall)
+locenglish = {
+  "w" : drama2 ,
+  "d" : classics ,}
+english.update(locenglish)
+locdrama2 = {
+  "n" : computing ,
+  "e" : english , }
+drama2.update(locdrama2)
+loccomputing = {
+  "n" : languages ,
+  "s" : drama2 ,
+  "w" : confusioncorridor ,}
+computing.update(loccomputing)
+locmaths2 = {
+  "e" : languages ,
+  "d" : maths1 ,}
+maths2.update(locmaths2)
+loccloakroom = {
+  "w" : confusioncorridor ,}
+cloakroom.update(loccloakroom)
+locconfusioncorridor = {
+ "n" : geography,
+ "e" : languages ,
+ "s" : computing ,
+ "w" : cloakroom,
+ "u" : library , 
+ "d" : office ,}
+confusioncorridor.update(locconfusioncorridor)
+loclanguages = {
+  "e" : maths2 ,
+  "s" : computing ,
+  "w" : confusioncorridor ,
+  "d" : chemistry ,}
+languages.update(loclanguages)
+locgeography = {
+  "n" : commonroom ,
+  "s" : confusioncorridor ,}
+geography.update(locgeography)
+loccommonroom = {
+  "e" : rs ,
+  "s" : geography ,
+  "w" : emptyblock ,
+  "d" : artarea ,}
+commonroom.update(loccommonroom)
+locrs = {
+  "w" : commonroom ,
+  "d" : physics ,}
+rs.update(locrs)
+locemptyblock = {
+  "e" : commonroom ,}
+emptyblock.update(locemptyblock)
+locsixblock2 = {
+  "d" : sixblock1 ,}
+sixblock2.update(locsixblock2)
+locmusic2 = {
+  "d" : music1 ,}
+music2.update(locmusic2)
+loclibrary = {
+  "d" : computing ,
+  "n" : supportroom}
+library.update(loclibrary)
+locsupportroom = {
+  "s" : library,
+  "d" : confusioncorridor}
+supportroom.update(locsupportroom)
+
+
+
+game()
+
+
